@@ -33,9 +33,10 @@ class InterfaceIL(object):
         self.file_label = Label(file_picker_frame, text="Choose the file you want to examine :").grid(column=0, row=1)
         self.file_entry = Entry(file_picker_frame, width='50')
         self.file_entry.grid(column=0, row=2)
-        self.browse_button = Button(file_picker_frame, text="Browse", command=self.seek_file, width=10).grid(column=1, row=2)
-        self.analyse_file_button = Button(file_picker_frame, text="Check !", command=self.analyse_file, width=10).grid(column=0,row=3)
-
+        self.browse_button = Button(file_picker_frame, text="Browse", command=self.seek_file, width=10)\
+            .grid(column=1, row=2)
+        self.analyse_file_button = Button(file_picker_frame, text="Check !", command=self.analyse_file, width=10)\
+            .grid(column=0, row=3)
 
         # Results frame
         results_frame = LabelFrame(self.root, text="Results")
@@ -73,10 +74,8 @@ class InterfaceIL(object):
         fname = askopenfilename(filetypes=(
             ("All files", "*.*"),
             ))
-        #print(fname)
         self.file_entry.delete(0, END)
         self.file_entry.insert(0, fname)
 
-
     def analyse_file(self):
-        data = File_analysis(self.file_entry.get())
+        data = FileAnalysis(self.file_entry.get())
