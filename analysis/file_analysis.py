@@ -79,3 +79,4 @@ class FileAnalysis(object):
         print(self.trigrams)
 
 
+
