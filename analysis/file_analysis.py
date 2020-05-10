@@ -77,3 +77,5 @@ class FileAnalysis(object):
         print(self.letters)
         print(self.bigrams)
         print(self.trigrams)
+
+
