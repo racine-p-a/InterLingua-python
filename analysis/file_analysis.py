@@ -20,10 +20,10 @@ class FileAnalysis(object):
             - bigrams               DONE
             - trigrams              DONE
         - list of words frequency
-            - monograms
-            - bigrams
-            - trigrams
-        - mean size of words
+            - monograms             DONE
+            - bigrams               DONE
+            - trigrams              DONE
+        - mean size of words        DONE
         """
         self.letter_count = 0
         self.line_count = 0
@@ -31,6 +31,10 @@ class FileAnalysis(object):
         self.letters = {}
         self.bigrams = {}
         self.trigrams = {}
+        self.words = {}
+        self.word_bigrams = {}
+        self.word_trigrams = {}
+        self.mean_size_of_words = 0
         print('file location : ' + file_location)
         file_opener = open(file_location, 'r')
         file_content = file_opener.read().lower()
@@ -48,7 +52,6 @@ class FileAnalysis(object):
         # Counting monograms, bigrams and trigrams of letters.
         penultimate_letter = ''
         last_letter = ''
-        current_trigram = ''
         for letter in file_content:
             # Monograms
             if letter in self.letters:
@@ -71,12 +74,49 @@ class FileAnalysis(object):
             penultimate_letter = last_letter
             last_letter = letter
 
+        # Counting monograms, bigrams and trigrams of words.
+        cumulated_length_of_words = 0
+        penultimate_word = ''
+        last_word = ''
+        for word in word_list:
+            cumulated_length_of_words += len(word)
+            # Monograms of words
+            if word in self.words:
+                self.words[word] += 1
+            else:
+                self.words[word] = 1
+
+            # Bigrams of words
+            if last_word != '':
+                if(str(last_word), str(word)) in self.word_bigrams:
+                    self.word_bigrams[(str(last_word), str(word))] += 1
+                else:
+                    self.word_bigrams[(str(last_word), str(word))] = 1
+
+            # Trigrams of words
+            if last_word != '' and penultimate_word != '':
+                if (str(penultimate_word), str(last_word), str(word)) in self.word_trigrams:
+                    self.word_trigrams[(str(penultimate_word), str(last_word), str(word))] += 1
+                else:
+                    self.word_trigrams[(str(penultimate_word), str(last_word), str(word))] = 1
+                pass
+
+            penultimate_word = last_word
+            last_word = word
+        # print('cumulated size : ' + str(cumulated_length_of_words))
+        # print('word quantity : ' + str(len(word_list)))
+        self.mean_size_of_words = cumulated_length_of_words/len(word_list)
+        self.display_results()
+
+    def display_results(self):
         print('letter count : ' + str(self.letter_count))
         print('line count : ' + str(self.line_count))
         print('word count : ' + str(self.word_count))
         print(self.letters)
         print(self.bigrams)
         print(self.trigrams)
-
-
-
+        print(self.words)
+        print(self.word_bigrams)
+        print(self.word_trigrams)
+        print('Mean size of words : ' + str(self.mean_size_of_words))
+        print('done')
