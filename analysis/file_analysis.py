@@ -19,7 +19,7 @@ class FileAnalysis(object):
             - monograms             DONE
             - bigrams               DONE
             - trigrams              DONE
-        - list of words frequency
+        - list of words frequency   DONE
             - monograms             DONE
             - bigrams               DONE
             - trigrams              DONE
