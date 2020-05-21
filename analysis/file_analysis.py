@@ -73,6 +73,10 @@ class FileAnalysis(object):
 
             penultimate_letter = last_letter
             last_letter = letter
+        # Sorting the dictionnaries.
+        self.letters = sorted(self.letters.items(), key=lambda x: x[1], reverse=True)
+        self.bigrams = sorted(self.bigrams.items(), key=lambda x: x[1], reverse=True)
+        self.trigrams = sorted(self.trigrams.items(), key=lambda x: x[1], reverse=True)
 
         # Counting monograms, bigrams and trigrams of words.
         cumulated_length_of_words = 0
