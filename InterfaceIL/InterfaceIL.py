@@ -63,16 +63,18 @@ class InterfaceIL(object):
         self.number_of_letters_monograms_entry = Label(self.tab_global_results, text='Letters repartition :')
         self.number_of_letters_monograms_result = Treeview(self.tab_global_results, columns=(
             "#0"
-            'Monograms',
-            'Monograms count',
-            'Bigrams',
-            'Bigrams count',
-            'Trigrams',
-            'Trigrams count', # I have no idea why the number of categories mismatches with the number of columns.
+            'Monogram',
+            'Monogram count',
+            'Mongoram percentage'
+            'Bigram',
+            'Bigram count',
+            'Bigram percentage'
+            'Trigram',
+            'Trigram count',
         ))
         self.number_of_letters_monograms_result.heading('#0', text='#')
         self.number_of_letters_monograms_result.heading('#1', text='Monograms')
-        self.number_of_letters_monograms_result.heading('#2', text='Monograms cunt')
+        self.number_of_letters_monograms_result.heading('#2', text='Monograms count')
         self.number_of_letters_monograms_result.heading('#3', text='Bigrams')
         self.number_of_letters_monograms_result.heading('#4', text='Bigrams count')
         self.number_of_letters_monograms_result.heading('#5', text='Trigrams')
@@ -128,7 +130,53 @@ class InterfaceIL(object):
         self.number_of_letters_result.insert(INSERT, getattr(self.file_statistics, 'letter_count'))
         self.number_of_lines_result.insert(INSERT, getattr(self.file_statistics, 'line_count'))
         self.number_of_words_result.insert(INSERT, getattr(self.file_statistics, 'word_count'))
-        self.update_letter_monograms_entry()
+        self.update_letter_stats_entry()
 
-    def update_letter_monograms_entry(self):
-        self.number_of_letters_monograms_result.insert("", 'end', values=('toto', 'titi', 'toto', 'titi', 'toto', 'titi'))
+    def update_letter_stats_entry(self):
+        maximal_length = len(getattr(self.file_statistics, 'letters'))
+        if maximal_length < len(getattr(self.file_statistics, 'bigrams')):
+            maximal_length = len(getattr(self.file_statistics, 'bigrams'))
+        if maximal_length < len(getattr(self.file_statistics, 'trigrams')):
+            maximal_length = len(getattr(self.file_statistics, 'trigrams'))
+
+        for i in range(maximal_length):
+            current_monogram = ''
+            current_monogram_count = ''
+            current_bigram = ''
+            current_bigram_count = ''
+            current_trigram = ''
+            current_trigram_count = ''
+
+            # Pick letter monograms.
+            if i < len(getattr(self.file_statistics, 'letters')):
+                current_monogram = getattr(self.file_statistics, 'letters')[i][0]
+                current_monogram_count = str(getattr(self.file_statistics, 'letters')[i][1])
+                percentage = getattr(self.file_statistics, 'letters')[i][1]
+                percentage /= getattr(self.file_statistics, 'letter_count')
+                current_monogram_count += ' (' + str(round(percentage*100, 2)) + '%)'
+            # Pick letter bigrams.
+            if i < len(getattr(self.file_statistics, 'bigrams')):
+                current_bigram = getattr(self.file_statistics, 'bigrams')[i][0]
+                current_bigram_count = str(getattr(self.file_statistics, 'bigrams')[i][1])
+                percentage = getattr(self.file_statistics, 'bigrams')[i][1]
+                percentage /= getattr(self.file_statistics, 'cumulated_sum_of_bigrams')
+                current_bigram_count += ' (' + str(round(percentage*100, 2)) + '%)'
+            # Pick letter trigrams.
+            if i < len(getattr(self.file_statistics, 'trigrams')):
+                current_trigram = getattr(self.file_statistics, 'trigrams')[i][0]
+                current_trigram_count = str(getattr(self.file_statistics, 'trigrams')[i][1])
+                percentage = getattr(self.file_statistics, 'trigrams')[i][1]
+                percentage /= getattr(self.file_statistics, 'cumulated_sum_of_trigrams')
+                current_trigram_count += ' (' + str(round(percentage*100, 2)) + '%)'
+
+            self.number_of_letters_monograms_result.insert("", 'end', values=(
+                self.make_characters_displayable(current_monogram),
+                current_monogram_count,
+                self.make_characters_displayable(current_bigram),
+                current_bigram_count,
+                self.make_characters_displayable(current_trigram),
+                current_trigram_count
+            ))
+
+    def make_characters_displayable(self, dirty_string=''):
+        return '"' + dirty_string + '"'

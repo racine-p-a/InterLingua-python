@@ -31,7 +31,9 @@ class FileAnalysis(object):
         self.word_count = 0
         self.letters = {}
         self.bigrams = {}
+        self.cumulated_sum_of_bigrams = 0
         self.trigrams = {}
+        self.cumulated_sum_of_trigrams = 0
         self.words = {}
         self.word_bigrams = {}
         self.word_trigrams = {}
@@ -65,12 +67,14 @@ class FileAnalysis(object):
                     self.bigrams[last_letter + letter] += 1
                 else:
                     self.bigrams[last_letter + letter] = 1
+                self.cumulated_sum_of_bigrams += 1
             # Trigrams
             if last_letter != '' and penultimate_letter != '':
                 if (penultimate_letter + last_letter + letter) in self.trigrams:
                     self.trigrams[penultimate_letter + last_letter + letter] += 1
                 else:
                     self.trigrams[penultimate_letter + last_letter + letter] = 1
+                self.cumulated_sum_of_trigrams += 1
 
             penultimate_letter = last_letter
             last_letter = letter
