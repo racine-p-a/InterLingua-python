@@ -2,6 +2,7 @@
 
 import re
 
+
 class FileAnalysis(object):
     """
     Representation of a file and manages all computations ad operations required.

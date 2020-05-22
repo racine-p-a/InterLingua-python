@@ -60,13 +60,30 @@ class InterfaceIL(object):
         self.number_of_words_entry.grid(column=0, row=3)
         self.number_of_words_result.grid(column=1, row=3)
         #                   Number of letter monograms
-        self.number_of_letters_monograms_entry = Label(self.tab_global_results, text='Number of monograms of letters :')
-        self.number_of_letters_monograms_result = Treeview(self.tab_global_results,columns=('Message ID', 'Other Data'))
-        self.number_of_letters_monograms_result.heading('#0', text='Monogram')
-        self.number_of_letters_monograms_result.heading('#1', text='Count')
+        self.number_of_letters_monograms_entry = Label(self.tab_global_results, text='Letters repartition :')
+        self.number_of_letters_monograms_result = Treeview(self.tab_global_results, columns=(
+            "#0"
+            'Monograms',
+            'Monograms count',
+            'Bigrams',
+            'Bigrams count',
+            'Trigrams',
+            'Trigrams count', # I have no idea why the number of categories mismatches with the number of columns.
+        ))
+        self.number_of_letters_monograms_result.heading('#0', text='#')
+        self.number_of_letters_monograms_result.heading('#1', text='Monograms')
+        self.number_of_letters_monograms_result.heading('#2', text='Monograms cunt')
+        self.number_of_letters_monograms_result.heading('#3', text='Bigrams')
+        self.number_of_letters_monograms_result.heading('#4', text='Bigrams count')
+        self.number_of_letters_monograms_result.heading('#5', text='Trigrams')
+        self.number_of_letters_monograms_result.heading('#6', text='Trigrams count')
         self.number_of_letters_monograms_result.column('#0', stretch=YES)
         self.number_of_letters_monograms_result.column('#1', stretch=YES)
-
+        self.number_of_letters_monograms_result.column('#2', stretch=YES)
+        self.number_of_letters_monograms_result.column('#3', stretch=YES)
+        self.number_of_letters_monograms_result.column('#4', stretch=YES)
+        self.number_of_letters_monograms_result.column('#5', stretch=YES)
+        self.number_of_letters_monograms_result.column('#6', stretch=YES)
 
         self.number_of_letters_monograms_entry.grid(column=0, row=4)
         self.number_of_letters_monograms_result.grid(column=1, row=4)
@@ -114,4 +131,4 @@ class InterfaceIL(object):
         self.update_letter_monograms_entry()
 
     def update_letter_monograms_entry(self):
-        self.number_of_letters_monograms_result.insert("", 'end', values=('toto', 'titi'))
+        self.number_of_letters_monograms_result.insert("", 'end', values=('toto', 'titi', 'toto', 'titi', 'toto', 'titi'))
