@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter.ttk import *
 from analysis.file_analysis import *
+from analysis.corpus_language_analysis import *
 
 
 class InterfaceIL(object):
@@ -59,9 +60,9 @@ class InterfaceIL(object):
         self.number_of_words_result = Spinbox(self.tab_global_results, from_=0, to=10, width=15)
         self.number_of_words_entry.grid(column=0, row=3)
         self.number_of_words_result.grid(column=1, row=3)
-        #                   Number of letter monograms
-        self.number_of_letters_monograms_entry = Label(self.tab_global_results, text='Letters repartition :')
-        self.number_of_letters_monograms_result = Treeview(self.tab_global_results, columns=(
+        #                   Letters N-grams
+        self.letters_n_grams_entry = Label(self.tab_global_results, text='Letters repartition :')
+        self.letters_n_grams_result = Treeview(self.tab_global_results, columns=(
             "#0"
             'Monogram',
             'Monogram count',
@@ -72,23 +73,23 @@ class InterfaceIL(object):
             'Trigram',
             'Trigram count',
         ))
-        self.number_of_letters_monograms_result.heading('#0', text='#')
-        self.number_of_letters_monograms_result.heading('#1', text='Monograms')
-        self.number_of_letters_monograms_result.heading('#2', text='Monograms count')
-        self.number_of_letters_monograms_result.heading('#3', text='Bigrams')
-        self.number_of_letters_monograms_result.heading('#4', text='Bigrams count')
-        self.number_of_letters_monograms_result.heading('#5', text='Trigrams')
-        self.number_of_letters_monograms_result.heading('#6', text='Trigrams count')
-        self.number_of_letters_monograms_result.column('#0', stretch=YES)
-        self.number_of_letters_monograms_result.column('#1', stretch=YES)
-        self.number_of_letters_monograms_result.column('#2', stretch=YES)
-        self.number_of_letters_monograms_result.column('#3', stretch=YES)
-        self.number_of_letters_monograms_result.column('#4', stretch=YES)
-        self.number_of_letters_monograms_result.column('#5', stretch=YES)
-        self.number_of_letters_monograms_result.column('#6', stretch=YES)
+        self.letters_n_grams_result.heading('#0', text='#')
+        self.letters_n_grams_result.heading('#1', text='Monograms')
+        self.letters_n_grams_result.heading('#2', text='Monograms count')
+        self.letters_n_grams_result.heading('#3', text='Bigrams')
+        self.letters_n_grams_result.heading('#4', text='Bigrams count')
+        self.letters_n_grams_result.heading('#5', text='Trigrams')
+        self.letters_n_grams_result.heading('#6', text='Trigrams count')
+        self.letters_n_grams_result.column('#0', stretch=YES)
+        self.letters_n_grams_result.column('#1', stretch=YES)
+        self.letters_n_grams_result.column('#2', stretch=YES)
+        self.letters_n_grams_result.column('#3', stretch=YES)
+        self.letters_n_grams_result.column('#4', stretch=YES)
+        self.letters_n_grams_result.column('#5', stretch=YES)
+        self.letters_n_grams_result.column('#6', stretch=YES)
 
-        self.number_of_letters_monograms_entry.grid(column=0, row=4)
-        self.number_of_letters_monograms_result.grid(column=1, row=4)
+        self.letters_n_grams_entry.grid(column=0, row=4)
+        self.letters_n_grams_result.grid(column=1, row=4)
 
         self.results_frame.add(self.tab_global_results, text='Global results')
 
@@ -122,6 +123,7 @@ class InterfaceIL(object):
         self.file_statistics = FileAnalysis(self.file_entry.get())
         self.clean_entries()
         self.update_entries()
+        corpus_language_analyses = CorpusLanguageAnalysis()
 
     def update_entries(self):
         """
@@ -137,7 +139,7 @@ class InterfaceIL(object):
         self.number_of_letters_result.delete(0, END)
         self.number_of_lines_result.delete(0, END)
         self.number_of_words_result.delete(0, END)
-        self.number_of_letters_monograms_result.delete(*self.number_of_letters_monograms_result.get_children())
+        self.letters_n_grams_result.delete(*self.letters_n_grams_result.get_children())
 
     def update_letter_stats_entry(self):
         maximal_length = len(getattr(self.file_statistics, 'letters'))
@@ -176,7 +178,7 @@ class InterfaceIL(object):
                 percentage /= getattr(self.file_statistics, 'cumulated_sum_of_trigrams')
                 current_trigram_count += ' (' + str(round(percentage*100, 2)) + '%)'
 
-            self.number_of_letters_monograms_result.insert("", 'end', values=(
+            self.letters_n_grams_result.insert("", 'end', values=(
                 self.make_characters_displayable(current_monogram),
                 current_monogram_count,
                 self.make_characters_displayable(current_bigram),
