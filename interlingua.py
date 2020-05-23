@@ -1,7 +1,6 @@
 # -*- coding:Utf-8 -*-
 
 from InterfaceIL.InterfaceIL import *
-from input.ListeFichiers import ListeFichiers
 
 
 def display_manual():
@@ -15,7 +14,8 @@ if __name__ == '__main__':
         monInterface.root.mainloop()
 
     elif len(sys.argv) == 2:
-        maListeDImports = ListeFichiers(sys.argv[1])
+        # todo
+        pass
 
     else:
         display_manual()

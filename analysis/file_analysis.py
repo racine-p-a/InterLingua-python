@@ -40,7 +40,7 @@ class FileAnalysis(object):
         self.word_trigrams = {}
         self.cumulated_sum_of_word_trigrams = 0
         self.mean_size_of_words = 0
-        print('file location : ' + file_location)
+
         file_opener = open(file_location, 'r')
         file_content = file_opener.read().lower()
 
