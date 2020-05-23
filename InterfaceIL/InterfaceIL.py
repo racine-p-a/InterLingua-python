@@ -120,6 +120,7 @@ class InterfaceIL(object):
 
     def analyse_file(self):
         self.file_statistics = FileAnalysis(self.file_entry.get())
+        self.clean_entries()
         self.update_entries()
 
     def update_entries(self):
@@ -131,6 +132,12 @@ class InterfaceIL(object):
         self.number_of_lines_result.insert(INSERT, getattr(self.file_statistics, 'line_count'))
         self.number_of_words_result.insert(INSERT, getattr(self.file_statistics, 'word_count'))
         self.update_letter_stats_entry()
+
+    def clean_entries(self):
+        self.number_of_letters_result.delete(0, END)
+        self.number_of_lines_result.delete(0, END)
+        self.number_of_words_result.delete(0, END)
+        self.number_of_letters_monograms_result.delete(*self.number_of_letters_monograms_result.get_children())
 
     def update_letter_stats_entry(self):
         maximal_length = len(getattr(self.file_statistics, 'letters'))
@@ -178,5 +185,6 @@ class InterfaceIL(object):
                 current_trigram_count
             ))
 
-    def make_characters_displayable(self, dirty_string=''):
+    @staticmethod
+    def make_characters_displayable(dirty_string=''):
         return '"' + dirty_string + '"'
