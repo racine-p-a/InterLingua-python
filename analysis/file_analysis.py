@@ -36,7 +36,9 @@ class FileAnalysis(object):
         self.cumulated_sum_of_trigrams = 0
         self.words = {}
         self.word_bigrams = {}
+        self.cumulated_sum_of_word_bigrams = 0
         self.word_trigrams = {}
+        self.cumulated_sum_of_word_trigrams = 0
         self.mean_size_of_words = 0
         print('file location : ' + file_location)
         file_opener = open(file_location, 'r')
@@ -101,6 +103,7 @@ class FileAnalysis(object):
                     self.word_bigrams[(str(last_word), str(word))] += 1
                 else:
                     self.word_bigrams[(str(last_word), str(word))] = 1
+                self.cumulated_sum_of_word_bigrams += 1
 
             # Trigrams of words
             if last_word != '' and penultimate_word != '':
@@ -108,14 +111,20 @@ class FileAnalysis(object):
                     self.word_trigrams[(str(penultimate_word), str(last_word), str(word))] += 1
                 else:
                     self.word_trigrams[(str(penultimate_word), str(last_word), str(word))] = 1
-                pass
+                self.cumulated_sum_of_word_trigrams += 1
+
 
             penultimate_word = last_word
             last_word = word
+        # Sorting the dictionnaries.
+        self.words = sorted(self.words.items(), key=lambda x: x[1], reverse=True)
+        self.word_bigrams = sorted(self.word_bigrams.items(), key=lambda x: x[1], reverse=True)
+        self.word_trigrams = sorted(self.word_trigrams.items(), key=lambda x: x[1], reverse=True)
+
         # print('cumulated size : ' + str(cumulated_length_of_words))
         # print('word quantity : ' + str(len(word_list)))
         self.mean_size_of_words = cumulated_length_of_words/len(word_list)
-        self.display_results()
+        # self.display_results()
 
     def display_results(self):
         print('letter count : ' + str(self.letter_count))

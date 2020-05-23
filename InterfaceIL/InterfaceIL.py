@@ -61,15 +61,13 @@ class InterfaceIL(object):
         self.number_of_words_entry.grid(column=0, row=3)
         self.number_of_words_result.grid(column=1, row=3)
         #                   Letters N-grams
-        self.letters_n_grams_entry = Label(self.tab_global_results, text='Letters repartition :')
+        self.letters_n_grams_entry = Label(self.tab_global_results, text='Letter repartition :')
         self.letters_n_grams_result = Treeview(self.tab_global_results, columns=(
             "#0"
             'Monogram',
             'Monogram count',
-            'Mongoram percentage'
             'Bigram',
             'Bigram count',
-            'Bigram percentage'
             'Trigram',
             'Trigram count',
         ))
@@ -90,6 +88,35 @@ class InterfaceIL(object):
 
         self.letters_n_grams_entry.grid(column=0, row=4)
         self.letters_n_grams_result.grid(column=1, row=4)
+
+        #                   Words N-grams
+        self.words_n_grams_entry = Label(self.tab_global_results, text='Word repartition :')
+        self.words_n_grams_result = Treeview(self.tab_global_results, columns=(
+            "#0"
+            'Monogram',
+            'Monogram count',
+            'Bigram',
+            'Bigram count',
+            'Trigram',
+            'Trigram count',
+        ))
+        self.words_n_grams_result.heading('#0', text='#')
+        self.words_n_grams_result.heading('#1', text='Monograms')
+        self.words_n_grams_result.heading('#2', text='Monograms count')
+        self.words_n_grams_result.heading('#3', text='Bigrams')
+        self.words_n_grams_result.heading('#4', text='Bigrams count')
+        self.words_n_grams_result.heading('#5', text='Trigrams')
+        self.words_n_grams_result.heading('#6', text='Trigrams count')
+        self.words_n_grams_result.column('#0', stretch=YES)
+        self.words_n_grams_result.column('#1', stretch=YES)
+        self.words_n_grams_result.column('#2', stretch=YES)
+        self.words_n_grams_result.column('#3', stretch=YES)
+        self.words_n_grams_result.column('#4', stretch=YES)
+        self.words_n_grams_result.column('#5', stretch=YES)
+        self.words_n_grams_result.column('#6', stretch=YES)
+
+        self.words_n_grams_entry.grid(column=0, row=5)
+        self.words_n_grams_result.grid(column=1, row=5)
 
         self.results_frame.add(self.tab_global_results, text='Global results')
 
@@ -134,12 +161,14 @@ class InterfaceIL(object):
         self.number_of_lines_result.insert(INSERT, getattr(self.file_statistics, 'line_count'))
         self.number_of_words_result.insert(INSERT, getattr(self.file_statistics, 'word_count'))
         self.update_letter_stats_entry()
+        self.update_word_stats_entry()
 
     def clean_entries(self):
         self.number_of_letters_result.delete(0, END)
         self.number_of_lines_result.delete(0, END)
         self.number_of_words_result.delete(0, END)
         self.letters_n_grams_result.delete(*self.letters_n_grams_result.get_children())
+        self.words_n_grams_result.delete(*self.words_n_grams_result.get_children())
 
     def update_letter_stats_entry(self):
         maximal_length = len(getattr(self.file_statistics, 'letters'))
@@ -162,21 +191,21 @@ class InterfaceIL(object):
                 current_monogram_count = str(getattr(self.file_statistics, 'letters')[i][1])
                 percentage = getattr(self.file_statistics, 'letters')[i][1]
                 percentage /= getattr(self.file_statistics, 'letter_count')
-                current_monogram_count += ' (' + str(round(percentage*100, 2)) + '%)'
+                current_monogram_count += ' (' + str(round(percentage * 100, 2)) + '%)'
             # Pick letter bigrams.
             if i < len(getattr(self.file_statistics, 'bigrams')):
                 current_bigram = getattr(self.file_statistics, 'bigrams')[i][0]
                 current_bigram_count = str(getattr(self.file_statistics, 'bigrams')[i][1])
                 percentage = getattr(self.file_statistics, 'bigrams')[i][1]
                 percentage /= getattr(self.file_statistics, 'cumulated_sum_of_bigrams')
-                current_bigram_count += ' (' + str(round(percentage*100, 2)) + '%)'
+                current_bigram_count += ' (' + str(round(percentage * 100, 2)) + '%)'
             # Pick letter trigrams.
             if i < len(getattr(self.file_statistics, 'trigrams')):
                 current_trigram = getattr(self.file_statistics, 'trigrams')[i][0]
                 current_trigram_count = str(getattr(self.file_statistics, 'trigrams')[i][1])
                 percentage = getattr(self.file_statistics, 'trigrams')[i][1]
                 percentage /= getattr(self.file_statistics, 'cumulated_sum_of_trigrams')
-                current_trigram_count += ' (' + str(round(percentage*100, 2)) + '%)'
+                current_trigram_count += ' (' + str(round(percentage * 100, 2)) + '%)'
 
             self.letters_n_grams_result.insert("", 'end', values=(
                 self.make_characters_displayable(current_monogram),
@@ -184,6 +213,55 @@ class InterfaceIL(object):
                 self.make_characters_displayable(current_bigram),
                 current_bigram_count,
                 self.make_characters_displayable(current_trigram),
+                current_trigram_count
+            ))
+
+    def update_word_stats_entry(self):
+        maximal_length = len(getattr(self.file_statistics, 'words'))
+        if maximal_length < len(getattr(self.file_statistics, 'word_bigrams')):
+            maximal_length = len(getattr(self.file_statistics, 'word_bigrams'))
+        if maximal_length < len(getattr(self.file_statistics, 'word_trigrams')):
+            maximal_length = len(getattr(self.file_statistics, 'word_trigrams'))
+
+        for i in range(maximal_length):
+            current_monogram = ''
+            current_monogram_count = ''
+            current_bigram = ''
+            current_bigram_count = ''
+            current_trigram = ''
+            current_trigram_count = ''
+
+            # Pick word monograms.
+            if i < len(getattr(self.file_statistics, 'words'))\
+                    and getattr(self.file_statistics, 'word_count') > 0:
+                current_monogram = getattr(self.file_statistics, 'words')[i][0]
+                current_monogram_count = str(getattr(self.file_statistics, 'words')[i][1])
+                percentage = getattr(self.file_statistics, 'words')[i][1]
+                percentage /= getattr(self.file_statistics, 'word_count')
+                current_monogram_count += ' (' + str(round(percentage * 100, 2)) + '%)'
+            # Pick letter bigrams.
+            if i < len(getattr(self.file_statistics, 'word_bigrams'))\
+                    and getattr(self.file_statistics, 'cumulated_sum_of_word_bigrams') > 0:
+                current_bigram = getattr(self.file_statistics, 'word_bigrams')[i][0]
+                current_bigram_count = str(getattr(self.file_statistics, 'word_bigrams')[i][1])
+                percentage = getattr(self.file_statistics, 'word_bigrams')[i][1]
+                percentage /= getattr(self.file_statistics, 'cumulated_sum_of_word_bigrams')
+                current_bigram_count += ' (' + str(round(percentage * 100, 2)) + '%)'
+            # Pick letter trigrams.
+            if i < len(getattr(self.file_statistics, 'word_trigrams'))\
+                    and getattr(self.file_statistics, 'cumulated_sum_of_word_trigrams') > 0:
+                current_trigram = getattr(self.file_statistics, 'word_trigrams')[i][0]
+                current_trigram_count = str(getattr(self.file_statistics, 'word_trigrams')[i][1])
+                percentage = getattr(self.file_statistics, 'word_trigrams')[i][1]
+                percentage /= getattr(self.file_statistics, 'cumulated_sum_of_word_trigrams')
+                current_trigram_count += ' (' + str(round(percentage * 100, 2)) + '%)'
+
+            self.words_n_grams_result.insert("", 'end', values=(
+                current_monogram,
+                current_monogram_count,
+                current_bigram,
+                current_bigram_count,
+                current_trigram,
                 current_trigram_count
             ))
 
