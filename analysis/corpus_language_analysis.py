@@ -28,6 +28,7 @@ class CorpusLanguageAnalysis(object):
         self.get_list_language_directories()
         # For each language folder, analyze the corpus.
         self.analyze_languages()
+        print(self.languages_statistics)
 
     def analyze_languages(self):
         for language_folder in self.language_directories_list:
@@ -35,7 +36,34 @@ class CorpusLanguageAnalysis(object):
             if not os.path.exists(os.path.join(language_folder, 'results.txt')):
                 self.build_result_file(language_folder)
             # Read and load the results.
+            self.languages_statistics[os.path.join(language_folder, 'results.txt')] = self.load_result_file(
+                os.path.join(language_folder, 'results.txt')
+            )
 
+    def load_result_file(self, result_file=''):
+        letters = {}
+        words = {}
+        content = ''
+        with open(result_file, 'r') as content_file:
+            content = content_file.read()
+        _, letter_block, word_block, _ = content.split('---')
+
+        # Reading the letters
+        letter_block = letter_block.split("\n")
+        for letter_datum in letter_block:
+            letter_data = letter_datum.split('\t')
+            if len(letter_data) == 2:
+                letters[letter_data[0]] = letter_data[1]
+        # Reading the words
+        word_block = word_block.split("\n")
+        for word_datum in word_block:
+            word_data = word_datum.split('\t')
+            if len(word_data) == 2:
+                words[word_data[0]] = word_data[1]
+        return {'letters': letters, 'words': words}
+
+    def compare_file_to_result(self, file_to_compare=''):
+        pass
 
     def build_result_file(self, new_corpus_directory):
         """
