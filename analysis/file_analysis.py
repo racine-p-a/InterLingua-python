@@ -114,7 +114,6 @@ class FileAnalysis(object):
                     self.word_trigrams[(str(penultimate_word), str(last_word), str(word))] = 1
                 self.cumulated_sum_of_word_trigrams += 1
 
-
             penultimate_word = last_word
             last_word = word
         # Sorting the dictionnaries.

@@ -40,10 +40,10 @@ class CorpusLanguageAnalysis(object):
                 os.path.join(language_folder, 'results.txt')
             )
 
-    def load_result_file(self, result_file=''):
+    @staticmethod
+    def load_result_file(result_file=''):
         letters = {}
         words = {}
-        content = ''
         with open(result_file, 'r') as content_file:
             content = content_file.read()
         _, letter_block, word_block, _ = content.split('---')
@@ -73,7 +73,8 @@ class CorpusLanguageAnalysis(object):
         :return:
         """
         files_analyzed = []
-        text_files_in_current_folder = [f for f in os.listdir(new_corpus_directory) if os.path.isfile(os.path.join(new_corpus_directory, f))]
+        text_files_in_current_folder = [f for f in os.listdir(new_corpus_directory)
+                                        if os.path.isfile(os.path.join(new_corpus_directory, f))]
         for text_file in text_files_in_current_folder:
             absolute_path_to_file = os.path.join(new_corpus_directory, text_file)
             files_analyzed.append(FileAnalysis(absolute_path_to_file))
@@ -111,11 +112,11 @@ class CorpusLanguageAnalysis(object):
             total_word_sum
         )
 
-    def write_result_file(self,
-                          new_corpus_directory='',
-                          complete_letter_sum={},
+    @staticmethod
+    def write_result_file(new_corpus_directory='',
+                          complete_letter_sum=None,
                           total_letter_sum=0,
-                          complete_word_sum={},
+                          complete_word_sum=None,
                           total_word_sum=0
                           ):
         file_result = open(os.path.join(new_corpus_directory, 'results.txt'), 'a')
