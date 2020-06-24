@@ -3,8 +3,10 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter.ttk import *
+
 from analysis.file_analysis import *
 from analysis.corpus_language_analysis import *
+from analysis.corpus_comparison import CorpusComparison
 
 
 class InterfaceIL(object):
@@ -150,7 +152,7 @@ class InterfaceIL(object):
         self.file_statistics = FileAnalysis(self.file_entry.get())
         self.clean_entries()
         self.update_entries()
-        corpus_language_analyses = CorpusLanguageAnalysis()
+        CorpusComparison(self.file_statistics, CorpusLanguageAnalysis())
 
     def update_entries(self):
         """

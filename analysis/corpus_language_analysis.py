@@ -20,6 +20,7 @@ class CorpusLanguageAnalysis(object):
         self.language_corpus_directory = ''
         self.language_directories_list = []
         self.languages_statistics = {}
+        self.results_languages_comparison = {}
 
         # Get folder list.
         root_directory = pathlib.Path(__file__).parent.parent.absolute()
@@ -28,7 +29,7 @@ class CorpusLanguageAnalysis(object):
         self.get_list_language_directories()
         # For each language folder, analyze the corpus.
         self.analyze_languages()
-        print(self.languages_statistics)
+
 
     def analyze_languages(self):
         for language_folder in self.language_directories_list:
@@ -39,6 +40,7 @@ class CorpusLanguageAnalysis(object):
             self.languages_statistics[os.path.join(language_folder, 'results.txt')] = self.load_result_file(
                 os.path.join(language_folder, 'results.txt')
             )
+
 
     @staticmethod
     def load_result_file(result_file=''):
@@ -62,8 +64,8 @@ class CorpusLanguageAnalysis(object):
                 words[word_data[0]] = word_data[1]
         return {'letters': letters, 'words': words}
 
-    def compare_file_to_result(self, file_to_compare=''):
-        pass
+
+
 
     def build_result_file(self, new_corpus_directory):
         """
