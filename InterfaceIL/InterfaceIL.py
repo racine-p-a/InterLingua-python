@@ -152,7 +152,7 @@ class InterfaceIL(object):
         self.file_statistics = FileAnalysis(self.file_entry.get())
         self.clean_entries()
         self.update_entries()
-        CorpusComparison(self.file_statistics, CorpusLanguageAnalysis())
+        CorpusComparison(self.file_statistics, CorpusLanguageAnalysis(), 25)  # todo : add word precision in interface.
 
     def update_entries(self):
         """

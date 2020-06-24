@@ -12,23 +12,37 @@ class CorpusComparison(object):
     different languages of the corpus.
     """
 
-    def __init__(self, unknown_file_statistics, corpus_statistics):
+    def __init__(self, unknown_file_statistics, corpus_statistics, word_precision=25):
 
         self.unknown_file_statistics = unknown_file_statistics
         self.corpus_statistics = corpus_statistics
+        self.word_precision = word_precision
 
-        for word in getattr(self.unknown_file_statistics, 'words'):
-            #print(word)
-            pass
+        self.languages_scores = {}
 
-        for results_file in getattr(self.corpus_statistics, 'languages_statistics'):
-            print(results_file)
+        # First of all, we prepare the list of available languages.
+        for language_result_file in getattr(self.corpus_statistics, 'languages_statistics'):
+            self.languages_scores[language_result_file] = 0
 
-        def compare_to_corpus(self):
-            # We have computed all results. Now, we have to match the language corpus with our unknown text
-            for language_result_file in self.languages_statistics:
-                print(language_result_file)
-                # print(len(self.languages_statistics[language_result_file]['words']))
-                print(self.languages_statistics[language_result_file]['words']['le'])
+        # Now, we browse each word of the unknown file and we compare its frequency in this file to its frequencies
+        # in the corpus files.
+        count = 0
+        for word, word_occurencies in getattr(self.unknown_file_statistics, 'words'):
+            if count >= self.word_precision:
+                break
+            current_word_frequency = int(word_occurencies)/getattr(self.unknown_file_statistics, 'word_count')
+            # print(word, word_occurencies, current_word_frequency)
+            for language_result_file in getattr(self.corpus_statistics, 'languages_statistics'):
+                current_language_words = getattr(self.corpus_statistics, 'languages_statistics')[language_result_file]['words']
+                if word in current_language_words:
+                    # The word has been found in the current language. Let's add the difference of frequencies to the
+                    # language variation.
+                    self.languages_scores[language_result_file] += abs(float(current_word_frequency)-float(current_language_words[word]))
+                else:
+                    # The word does not exist in the current language. Let's add the complete score to the variation.
+                    self.languages_scores[language_result_file] += current_word_frequency
+            count += 1
 
-                # print(self.languages_statistics[language_result_file]['words'])
+    def display_scores(self):
+        for language in self.languages_scores:
+            print(str(language) + " : " + str(self.languages_scores[language]))
