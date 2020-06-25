@@ -30,8 +30,12 @@ class CorpusLanguageAnalysis(object):
         # For each language folder, analyze the corpus.
         self.analyze_languages()
 
-
     def analyze_languages(self):
+        """
+        If the language are not already analyzed (meaning their results.txt file are not created), we compute and write
+        them. When done, we load them.
+        :return:
+        """
         for language_folder in self.language_directories_list:
             # Create the results file if they do not exist.
             if not os.path.exists(os.path.join(language_folder, 'results.txt')):
@@ -41,9 +45,13 @@ class CorpusLanguageAnalysis(object):
                 os.path.join(language_folder, 'results.txt')
             )
 
-
     @staticmethod
     def load_result_file(result_file=''):
+        """
+        Reads a results.txt file and loads its data then returns it.
+        :param result_file: the path to the results.txt to load.
+        :return: dict
+        """
         letters = {}
         words = {}
         with open(result_file, 'r') as content_file:
@@ -63,9 +71,6 @@ class CorpusLanguageAnalysis(object):
             if len(word_data) == 2:
                 words[word_data[0]] = word_data[1]
         return {'letters': letters, 'words': words}
-
-
-
 
     def build_result_file(self, new_corpus_directory):
         """
@@ -121,6 +126,15 @@ class CorpusLanguageAnalysis(object):
                           complete_word_sum=None,
                           total_word_sum=0
                           ):
+        """
+        Write down the results.txt file with the computed data of its corresponding corpus.
+        :param new_corpus_directory:
+        :param complete_letter_sum:
+        :param total_letter_sum:
+        :param complete_word_sum:
+        :param total_word_sum:
+        :return:
+        """
         file_result = open(os.path.join(new_corpus_directory, 'results.txt'), 'a')
         file_result.write('---' + "\n")
         # Inscription of letters repartition
@@ -134,6 +148,10 @@ class CorpusLanguageAnalysis(object):
         file_result.close()
 
     def get_list_language_directories(self):
+        """
+        Get the list of folders : each one represents a different corpus.
+        :return:
+        """
         # The first one is the parent directory, we have to omit it.
         count = 0
         for language_directory in os.walk(self.language_corpus_directory):

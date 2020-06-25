@@ -1,10 +1,5 @@
 # -*- coding:Utf-8 -*-
 
-import pathlib
-import os
-
-from analysis.file_analysis import FileAnalysis
-
 
 class CorpusComparison(object):
     """
@@ -33,16 +28,25 @@ class CorpusComparison(object):
             current_word_frequency = int(word_occurencies)/getattr(self.unknown_file_statistics, 'word_count')
             # print(word, word_occurencies, current_word_frequency)
             for language_result_file in getattr(self.corpus_statistics, 'languages_statistics'):
-                current_language_words = getattr(self.corpus_statistics, 'languages_statistics')[language_result_file]['words']
+                current_language_words = getattr(
+                    self.corpus_statistics,
+                    'languages_statistics'
+                )[language_result_file]['words']
                 if word in current_language_words:
                     # The word has been found in the current language. Let's add the difference of frequencies to the
                     # language variation.
-                    self.languages_scores[language_result_file] += abs(float(current_word_frequency)-float(current_language_words[word]))
+                    self.languages_scores[language_result_file] += abs(
+                        float(current_word_frequency) - float(current_language_words[word])
+                    )
                 else:
                     # The word does not exist in the current language. Let's add the complete score to the variation.
                     self.languages_scores[language_result_file] += current_word_frequency
             count += 1
 
     def display_scores(self):
+        """
+        Displays languages scores in console.
+        :return:
+        """
         for language in self.languages_scores:
             print(str(language) + " : " + str(self.languages_scores[language]))

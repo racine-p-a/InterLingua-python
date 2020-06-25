@@ -11,7 +11,7 @@ from analysis.corpus_comparison import CorpusComparison
 
 class InterfaceIL(object):
     """
-    Create InterLingua interface.
+    Creates InterLingua interface.
     """
 
     def __init__(self):
@@ -39,6 +39,7 @@ class InterfaceIL(object):
         self.file_entry.grid(column=0, row=2)
         self.browse_button = Button(file_picker_frame, text="Browse", command=self.seek_file, width=10) \
             .grid(column=1, row=2)
+        # todo check impossible if no file given
         self.analyse_file_button = Button(file_picker_frame, text="Check !", command=self.analyse_file, width=10) \
             .grid(column=0, row=3)
 
@@ -123,12 +124,30 @@ class InterfaceIL(object):
         self.results_frame.add(self.tab_global_results, text='Global results')
 
         # Language results
-        tab_language_results = Frame(self.results_frame)
-        self.results_frame.add(tab_language_results, text='Language results')
+        self.languages_scores = {}
+        self.tab_language_results = Frame(self.results_frame)
 
-        # Authors results
-        tab_author_results = Frame(self.results_frame)
-        self.results_frame.add(tab_author_results, text='Author results')
+        self.closest_language_result_entry = Label(self.tab_language_results, text='Closest language :')
+        self.closest_language_result = Entry(self.tab_language_results, width='35')
+        self.closest_language_result_entry.grid(column=1, row=5)
+        self.closest_language_result.grid(column=2, row=5)
+
+        self.language_scores_entry = Label(self.tab_language_results, text='Scores :')
+        self.languages_scores_result = Treeview(self.tab_language_results, columns=(
+            'Language',
+            'Variation to the corpus',
+        ))
+        self.languages_scores_result.heading('#0', text='#')
+        self.languages_scores_result.heading('#1', text='Language name')
+        self.languages_scores_result.heading('#2', text='Variation to the corpus')
+        self.languages_scores_result.column('#0', stretch=YES)
+        self.languages_scores_result.column('#1', stretch=YES)
+        self.languages_scores_result.column('#2', stretch=YES)
+
+        self.language_scores_entry.grid(column=1, row=6)
+        self.languages_scores_result.grid(column=2, row=6)
+
+        self.results_frame.add(self.tab_language_results, text='Language results')
 
         self.results_frame.grid(column=0, row=4)
 
@@ -149,10 +168,18 @@ class InterfaceIL(object):
         self.file_entry.insert(0, fname)
 
     def analyse_file(self):
+        """
+        Makes all required analysis and get the results.
+        :return:
+        """
         self.file_statistics = FileAnalysis(self.file_entry.get())
+        # todo : add word precision in interface. :
+        self.languages_scores = getattr(
+            CorpusComparison(self.file_statistics, CorpusLanguageAnalysis(), 25),
+            'languages_scores'
+        )
         self.clean_entries()
         self.update_entries()
-        CorpusComparison(self.file_statistics, CorpusLanguageAnalysis(), 25)  # todo : add word precision in interface.
 
     def update_entries(self):
         """
@@ -164,15 +191,41 @@ class InterfaceIL(object):
         self.number_of_words_result.insert(INSERT, getattr(self.file_statistics, 'word_count'))
         self.update_letter_stats_entry()
         self.update_word_stats_entry()
+        self.choose_closest_language()
+        self.update_score_languages_entry()
+
+    def choose_closest_language(self):
+        """
+        Choose among the scores which languages is the closest and displays it in the interface.
+        :return:
+        """
+        closest_language = ''
+        closest_score = 1
+        for language_file in self.languages_scores:
+            if self.languages_scores[language_file] < closest_score:
+                closest_language = language_file
+                closest_score = self.languages_scores[language_file]
+
+        self.closest_language_result.insert(0, self.extract_language_from_path(closest_language))
 
     def clean_entries(self):
+        """
+        Purge all the content inside the interface.
+        :return:
+        """
         self.number_of_letters_result.delete(0, END)
         self.number_of_lines_result.delete(0, END)
         self.number_of_words_result.delete(0, END)
         self.letters_n_grams_result.delete(*self.letters_n_grams_result.get_children())
         self.words_n_grams_result.delete(*self.words_n_grams_result.get_children())
+        self.languages_scores_result.delete(*self.languages_scores_result.get_children())
+        self.closest_language_result.delete(0, END)
 
     def update_letter_stats_entry(self):
+        """
+        Updates the content inside the letters table.
+        :return:
+        """
         maximal_length = len(getattr(self.file_statistics, 'letters'))
         if maximal_length < len(getattr(self.file_statistics, 'bigrams')):
             maximal_length = len(getattr(self.file_statistics, 'bigrams'))
@@ -218,7 +271,22 @@ class InterfaceIL(object):
                 current_trigram_count
             ))
 
+    def update_score_languages_entry(self):
+        """
+        Updates the content of the table of languages score.
+        :return:
+        """
+        for file_result in self.languages_scores:
+            self.languages_scores_result.insert("", 'end', values=(
+                self.extract_language_from_path(file_result),
+                self.languages_scores[file_result],
+            ))
+
     def update_word_stats_entry(self):
+        """
+        Updates the content of the table of words.
+        :return:
+        """
         maximal_length = len(getattr(self.file_statistics, 'words'))
         if maximal_length < len(getattr(self.file_statistics, 'word_bigrams')):
             maximal_length = len(getattr(self.file_statistics, 'word_bigrams'))
@@ -267,6 +335,19 @@ class InterfaceIL(object):
                 current_trigram_count
             ))
 
+    def extract_language_from_path(self, path=''):
+        """
+        From a language path, extract the name of its main/last directory.
+        :param path: string /home/username/Projets/InterLingua-python/corpus/languages/french/test.txt
+        :return: string french
+        """
+        return os.path.basename(os.path.dirname(path))
+
     @staticmethod
     def make_characters_displayable(dirty_string=''):
+        """
+        In some case, a string needs to be surrounded by double_commas.
+        :param dirty_string:
+        :return:
+        """
         return '"' + dirty_string + '"'

@@ -126,6 +126,10 @@ class FileAnalysis(object):
         # self.display_results()
 
     def display_results(self):
+        """
+        Displays in console the computed result.
+        :return:
+        """
         print('letter count : ' + str(self.letter_count))
         print('line count : ' + str(self.line_count))
         print('word count : ' + str(self.word_count))
