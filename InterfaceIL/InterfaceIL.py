@@ -38,9 +38,14 @@ class InterfaceIL(object):
         self.file_entry = Entry(file_picker_frame, width='50')
         self.file_entry.grid(column=0, row=2)
         self.browse_button = Button(file_picker_frame, text="Browse", command=self.seek_file, width=10) \
-            .grid(column=1, row=2)
-        self.analyse_file_button = Button(file_picker_frame, text="Check !", command=self.analyse_file, width=10) \
             .grid(column=0, row=3)
+        self.word_precision_entry = Label(file_picker_frame, text='Word precision :')\
+            .grid(column=0, row=5, pady=(20, 10))
+        self.word_precision_input = Spinbox(file_picker_frame, from_=0, to=100, increment=1, width=4)
+        self.word_precision_input.insert(0, 25)
+        self.word_precision_input.grid(column=0, row=6)
+        self.analyse_file_button = Button(file_picker_frame, text="Check !", command=self.analyse_file, width=10) \
+            .grid(column=0, row=7, pady=(20, 10))
 
         # Results frame
         self.results_frame = Notebook(self.root)
@@ -172,9 +177,8 @@ class InterfaceIL(object):
         :return:
         """
         self.file_statistics = FileAnalysis(self.file_entry.get())
-        # todo : add word precision in interface. :
         self.languages_scores = getattr(
-            CorpusComparison(self.file_statistics, CorpusLanguageAnalysis(), 25),
+            CorpusComparison(self.file_statistics, CorpusLanguageAnalysis(), int(self.word_precision_input.get())),
             'languages_scores'
         )
         self.clean_entries()
