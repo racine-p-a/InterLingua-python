@@ -39,7 +39,6 @@ class InterfaceIL(object):
         self.file_entry.grid(column=0, row=2)
         self.browse_button = Button(file_picker_frame, text="Browse", command=self.seek_file, width=10) \
             .grid(column=1, row=2)
-        # todo check impossible if no file given
         self.analyse_file_button = Button(file_picker_frame, text="Check !", command=self.analyse_file, width=10) \
             .grid(column=0, row=3)
 
