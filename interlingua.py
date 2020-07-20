@@ -16,6 +16,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         monInterface = InterfaceIL()
         monInterface.root.mainloop()
+        exit()
 
     elif len(sys.argv) == 3:
         file_statistics = FileAnalysis(sys.argv[1])
@@ -23,6 +24,12 @@ if __name__ == '__main__':
             CorpusComparison(file_statistics, CorpusLanguageAnalysis(), int(sys.argv[2])),
             'languages_scores'
         )
-        print(languages_scores)
+        response = {}
+        for language_result_file in languages_scores:
+            response[os.path.basename(os.path.dirname(language_result_file))] = languages_scores[language_result_file]
+        print(response)
+        exit()
+
     else:
         display_manual()
+        exit()
