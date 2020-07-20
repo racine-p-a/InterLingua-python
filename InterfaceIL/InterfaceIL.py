@@ -156,9 +156,8 @@ class InterfaceIL(object):
         self.results_frame.grid(column=0, row=4)
 
         # Buttons frame
-        end_button_frame = LabelFrame(self.root, text="Action")
+        end_button_frame = LabelFrame(self.root)
         end_button_frame.grid(column=0, row=10)
-        Button(end_button_frame, text='Export', command=self.root.quit).grid(row=8, column=4)
         Button(end_button_frame, text='Leave', command=self.root.quit).grid(row=8, column=5)
 
     def seek_file(self):
